@@ -1,0 +1,183 @@
+body{
+font-family:Arial, Helvetica, sans-serif;
+background:#f6f7fb;
+margin:0;
+color:#222;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:50px 20px;
+}
+
+/* HEADER */
+
+.header{
+text-align:center;
+margin-bottom:50px;
+}
+
+.header-title{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+font-size:36px;
+font-weight:bold;
+}
+
+.header p{
+color:#666;
+font-size:18px;
+margin-top:10px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+border-radius:10px;
+border:1px solid #eee;
+padding:30px;
+transition:.25s;
+}
+
+.card:hover{
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* MISSION */
+
+.mission{
+background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+border:1px solid #d0d8ff;
+text-align:center;
+margin-bottom:40px;
+}
+
+.mission h2{
+margin-top:10px;
+}
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+margin-bottom:50px;
+}
+
+.stat{
+text-align:center;
+padding:25px;
+}
+
+.stat-value{
+font-size:28px;
+font-weight:bold;
+color:#3b5bdb;
+}
+
+.stat-label{
+color:#666;
+font-size:14px;
+}
+
+/* STORY */
+
+.story{
+margin-bottom:50px;
+}
+
+.story p{
+color:#666;
+line-height:1.7;
+}
+
+/* VALUES */
+
+.values{
+margin-bottom:50px;
+}
+
+.values-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.value{
+display:flex;
+gap:15px;
+}
+
+.value-icon{
+background:#eef2ff;
+padding:12px;
+border-radius:8px;
+}
+
+/* TEAM */
+
+.team-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.team-card{
+text-align:center;
+}
+
+.avatar{
+width:70px;
+height:70px;
+border-radius:50%;
+background:#3b5bdb;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+font-size:22px;
+margin:auto;
+margin-bottom:12px;
+}
+
+/* FUTURE */
+
+.future{
+background:#f1f2f6;
+text-align:center;
+margin-top:40px;
+}
+
+/* TITLES */
+
+.section-title{
+font-size:24px;
+font-weight:bold;
+margin-bottom:10px;
+text-align:center;
+}
+
+.section-title-left{
+font-size:24px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.header-title{
+font-size:28px;
+}
+
+}
+

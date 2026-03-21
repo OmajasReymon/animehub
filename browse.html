@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AnimeHub - Browse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="CSS/browse.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="logo">AnimeHub</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="browse.html" class="active">Browse</a>
+</nav>
+
+
+
+<div class="auth" id="authSection">
+
+<!-- LOGIN BUTTONS -->
+<div id="authButtons">
+<a href="login.html" class="btn-outline">Sign in</a>
+<a href="register.html" class="btn-outline">Sign up</a>
+</div>
+
+<!-- PROFILE MENU -->
+<div class="profile-menu" id="profileMenu" style="display:none;">
+
+<div class="avatar" onclick="toggleMenu()">A</div>
+
+<div class="dropdown" id="dropdownMenu" style="display:none;">
+
+<div class="dropdown-header">
+<strong id="userName"></strong>
+<p id="userEmail"></p>
+</div>
+
+<hr>
+
+<a href="profile.html">👤 Profile</a>
+<a href="favorites.html">❤️ My Favorites</a>
+<a href="setting.html">⚙️ Settings</a>
+
+<hr>
+
+<a href="help.html">❓ Help & Services</a>
+<a href="about.html">ℹ️ About Us</a>
+<a href="contact.html">✉️ Contact Us</a>
+
+<hr>
+
+<a onclick="logout()" class="logout">🚪 Log out</a>
+
+</div>
+</div>
+
+</div>
+
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+<h1>Browse Anime</h1>
+<p class="subtitle">Discover and explore our complete anime collection</p>
+
+<!-- SEARCH -->
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="Search by title..." onkeydown="if(event.key==='Enter'){searchAnime()}">
+<button onclick="searchAnime()">Search</button>
+<button onclick="getRecommendations()">Recommend</button>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+
+<span class="filter-title">Filters:</span>
+
+<select id="genreFilter">
+<option value="All">All</option>
+<option value="Action">Action</option>
+<option value="Fantasy">Fantasy</option>
+<option value="Drama">Drama</option>
+<option value="Sci-Fi">Sci-Fi</option>
+<option value="Romance">Romance</option>
+<option value="Comedy">Comedy</option>
+<option value="Supernatural">Supernatural</option>
+<option value="Sports">Sports</option>
+<option value="Mystery">Mystery</option>
+<option value="Mecha">Mecha</option>
+<option value="Slice of Life">Slice of Life</option>
+</select>
+
+<select id="statusFilter">
+<option value="All">All Status</option>
+<option value="Ongoing">Ongoing</option>
+<option value="Completed">Completed</option>
+<option value="Upcoming">Upcoming</option>
+</select>
+
+<select id="sortFilter">
+<option value="popularity">Popularity</option>
+<option value="rating">Rating</option>
+<option value="year">Year</option>
+<option value="title">Title</option>
+</select>
+
+<button onclick="clearFilters()" class="clear">Clear Filters</button>
+
+</div>
+
+<p class="results" id="resultCount"></p>
+
+<!-- ANIME GRID -->
+<div class="anime-grid" id="animeGrid"></div>
+
+</div>
+
+<!-- JS FILES -->
+<script src="JS/api.js"></script>
+<script src="JS/browse.js"></script>
+<script src="JS/recommend.js"></script>
+
+<!-- AUTH + DROPDOWN SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const authButtons = document.getElementById("authButtons");
+    const profileMenu = document.getElementById("profileMenu");
+
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+    const avatar = document.querySelector(".avatar");
+
+    if(user){
+        // ✅ USER LOGGED IN
+        if(authButtons) authButtons.style.display = "none";
+        if(profileMenu) profileMenu.style.display = "flex";
+
+        if(userName) userName.textContent = user.name;
+        if(userEmail) userEmail.textContent = user.email;
+
+        if(avatar){
+            avatar.textContent = user.name.charAt(0).toUpperCase();
+        }
+
+    } else {
+        if(authButtons) authButtons.style.display = "block";
+        if(profileMenu) profileMenu.style.display = "none";
+    }
+
+});
+
+
+// ✅ TOGGLE DROPDOWN
+function toggleMenu(){
+    const menu = document.getElementById("dropdownMenu");
+    if(menu){
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+}
+
+
+// ✅ CLOSE DROPDOWN WHEN CLICK OUTSIDE
+document.addEventListener("click", function(e){
+    const avatar = document.querySelector(".avatar");
+    const menu = document.getElementById("dropdownMenu");
+
+    if (avatar && menu && !avatar.contains(e.target) && !menu.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+
+
+// ✅ LOGOUT
+function logout(){
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

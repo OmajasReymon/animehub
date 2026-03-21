@@ -1,0 +1,271 @@
+body{
+font-family: Arial;
+background:#f5f5f7;
+margin:0;
+padding:20px;
+}
+
+.navbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:white;
+padding:10px 20px;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+.logo{
+font-weight:bold;
+font-size:20px;
+}
+
+nav a{
+margin:0 10px;
+text-decoration:none;
+color:#555;
+}
+
+nav .active{
+font-weight:bold;
+}
+
+.search input{
+padding:6px 10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.btn-primary{
+background:#000;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+}
+
+.btn-outline{
+border:1px solid #ccc;
+background:white;
+padding:6px 12px;
+border-radius:6px;
+}
+
+
+.hero{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+padding:50px;
+border-radius:16px;
+margin-bottom:30px;
+}
+
+.hero h1{
+font-size:40px;
+margin:10px 0;
+}
+
+.btn-start{
+background:white;
+color:black;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+font-weight:bold;
+}
+
+
+.tabs{
+margin-top:30px;
+}
+
+.tab-buttons{
+margin-bottom:20px;
+}
+
+.tab{
+padding:8px 16px;
+border:none;
+border-radius:20px;
+background:#eee;
+margin-right:10px;
+cursor:pointer;
+}
+
+.tab.active{
+background:black;
+color:white;
+}
+
+.tab-content{
+display:none;
+}
+
+.tab-content.active{
+display:block;
+}
+
+
+.anime-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+gap:20px;
+}
+
+.anime-card{
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.anime-card img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.anime-card h3{
+padding:10px;
+margin:0;
+}
+
+.anime-card p{
+padding:0 10px 10px;
+color:#777;
+}
+
+
+.genres{
+margin-top:40px;
+}
+
+.genre-buttons{
+margin-bottom:20px;
+}
+
+.genre{
+border:1px solid #ccc;
+background:white;
+padding:8px 14px;
+border-radius:20px;
+margin:5px;
+cursor:pointer;
+}
+
+.genre.active{
+background:black;
+color:white;
+}
+button.signup-link{
+background:none;
+border:none;
+color:#0f172a;
+cursor:pointer;
+font-weight:600;
+}
+button.signup-link:hover{
+text-decoration:underline;
+}
+.profile-menu{
+position:relative;
+}
+
+.avatar{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#000;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+cursor:pointer;
+}
+
+.dropdown{
+position:absolute;
+right:0;
+top:50px;
+background:white;
+width:220px;
+border-radius:10px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+display:none;
+overflow:hidden;
+z-index:999;
+}
+
+.dropdown a{
+display:block;
+padding:10px 15px;
+text-decoration:none;
+color:#333;
+font-size:14px;
+}
+
+.dropdown a:hover{
+background:#f5f5f5;
+}
+
+.dropdown-header{
+padding:15px;
+}
+
+.dropdown-header p{
+font-size:12px;
+color:gray;
+margin:0;
+}
+
+.logout{
+color:red;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  color: white;
+  padding: 10px 20px;
+}
+
+.nav-links a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+#userSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#userSection button {
+  background: red;
+  border: none;
+  padding: 5px 10px;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.profile-icon {
+  font-size: 22px;
+  cursor: pointer;
+  background: #222;
+  padding: 8px 12px;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.profile-icon:hover {
+  background: #444;
+}
+
+#userSection a {
+  margin-left: 10px;
+  color: white;
+  text-decoration: none;
+}

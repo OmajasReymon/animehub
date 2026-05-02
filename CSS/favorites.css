@@ -10,6 +10,26 @@ margin:auto;
 padding:40px 20px;
 }
 
+.page-nav{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:20px;
+}
+
+.nav-link{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 16px;
+border:1px solid #ddd;
+border-radius:999px;
+background:white;
+color:#111827;
+text-decoration:none;
+font-weight:600;
+}
+
 .header{
 display:flex;
 align-items:center;
@@ -117,7 +137,7 @@ transform:translateY(35px);
 background:#ff4d4d;
 color:white;
 border:none;
-width:32px;
+min-width:74px;
 height:32px;
 border-radius:8px;
 cursor:pointer;

@@ -1,103 +1,126 @@
-const grid = document.getElementById("grid");
-const empty = document.getElementById("empty");
-const count = document.getElementById("count");
+const favoritesElements = {
+    grid: document.getElementById("grid"),
+    empty: document.getElementById("empty"),
+    count: document.getElementById("count"),
+    sortFavorites: document.getElementById("sortFavorites"),
+    browseAnimeButton: document.getElementById("browseAnimeButton")
+};
 
-const user = JSON.parse(localStorage.getItem("user"));
+const favoritesUser = window.AnimeHubAccount.requireUser();
+let favoritesState = [];
 
-if(!user){
-    alert("Please login first");
-    window.location.href = "login.html";
+function showToast(message, type = "info", options = {}) {
+    if (window.AnimeHubToast?.show) {
+        window.AnimeHubToast.show(message, type, options);
+        return;
+    }
+
+    alert(message);
 }
 
-// -----------------------------
-// LOAD FAVORITES FROM BACKEND
-// -----------------------------
-async function loadFavorites(){
-    try{
-        grid.innerHTML = "Loading...";
+function sortFavoritesList(list, sortMode) {
+    const items = [...list];
 
-        const res = await fetch(`http://127.0.0.1:5000/favorites/${user.user_id}`);
-        const data = await res.json();
+    if (sortMode === "score") {
+        return items.sort((first, second) => {
+            const firstScore = typeof first.score === "number" ? first.score : -1;
+            const secondScore = typeof second.score === "number" ? second.score : -1;
+            return secondScore - firstScore;
+        });
+    }
 
-        if(!data.success){
-            grid.innerHTML = "Failed to load favorites";
-            return;
-        }
+    if (sortMode === "status") {
+        return items.sort((first, second) => String(first.status || "").localeCompare(String(second.status || "")));
+    }
 
-        const favorites = data.data;
+    return items.sort((first, second) => String(first.title || "").localeCompare(String(second.title || "")));
+}
 
-        grid.innerHTML = "";
+function renderFavorites() {
+    const sortMode = favoritesElements.sortFavorites?.value || "title";
+    const favorites = sortFavoritesList(favoritesState, sortMode);
 
-        if(favorites.length === 0){
-            grid.style.display = "none";
-            empty.style.display = "block";
-            count.textContent = "0 anime saved";
-            return;
-        }
+    favoritesElements.grid.innerHTML = "";
 
-        grid.style.display = "grid";
-        empty.style.display = "none";
-        count.textContent = `${favorites.length} anime saved`;
+    if (!favorites.length) {
+        favoritesElements.grid.style.display = "none";
+        favoritesElements.empty.style.display = "block";
+        favoritesElements.count.textContent = "0 anime saved";
+        return;
+    }
 
-        favorites.forEach(anime => {
+    favoritesElements.grid.style.display = "grid";
+    favoritesElements.empty.style.display = "none";
+    favoritesElements.count.textContent = `${favorites.length} anime saved`;
 
-            const card = document.createElement("div");
-            card.classList.add("card");
+    favorites.forEach((anime) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.tabIndex = 0;
+        card.innerHTML = `
+            <span class="badge">${anime.status || "Unknown"}</span>
+            <span class="rating">Score ${typeof anime.score === "number" ? anime.score.toFixed(2).replace(/0+$/, "").replace(/\.$/, "") : "N/A"}</span>
+            <img src="${anime.image}" alt="${anime.title}">
+            <button class="remove" type="button" aria-label="Remove ${anime.title} from favorites">Remove</button>
+            <div class="info">
+                <div class="title">${anime.title}</div>
+                <div class="meta">MAL ID: ${anime.mal_id}</div>
+            </div>
+        `;
 
-            card.innerHTML = `
-                <span class="badge">${anime.status || "Unknown"}</span>
-                <span class="rating">⭐ ${anime.score || "N/A"}</span>
-
-                <img src="${anime.image}" alt="">
-
-                <button class="remove" onclick="removeFavorite(${anime.mal_id})">🗑</button>
-
-                <div class="info">
-                    <div class="title">${anime.title}</div>
-                    <div class="meta">ID: ${anime.mal_id}</div>
-                </div>
-            `;
-
-            grid.appendChild(card);
+        card.addEventListener("click", () => {
+            if (anime.mal_id) {
+                window.location.href = `anime-detail.php?mal_id=${encodeURIComponent(anime.mal_id)}`;
+            }
         });
 
-    }catch(err){
-        console.error(err);
-        grid.innerHTML = "Error loading favorites";
+        card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                card.click();
+            }
+        });
+
+        card.querySelector(".remove")?.addEventListener("click", async (event) => {
+            event.stopPropagation();
+
+            try {
+                await window.AnimeHubAccount.removeFavorite(favoritesUser.user_id, anime.mal_id);
+                favoritesState = favoritesState.filter((favorite) => favorite.mal_id !== anime.mal_id);
+                renderFavorites();
+                showToast(`${anime.title} was removed from your favorites.`, "success", {
+                    title: "Favorite Removed"
+                });
+            } catch (error) {
+                console.error("REMOVE FAVORITE ERROR:", error);
+                showToast(error.message || "Failed to remove favorite", "error", {
+                    title: "Remove Failed"
+                });
+            }
+        });
+
+        favoritesElements.grid.appendChild(card);
+    });
+}
+
+async function loadFavorites() {
+    if (!favoritesUser) {
+        return;
+    }
+
+    try {
+        favoritesElements.grid.innerHTML = "Loading favorites...";
+        favoritesState = await window.AnimeHubAccount.fetchFavorites(favoritesUser.user_id);
+        renderFavorites();
+    } catch (error) {
+        console.error("LOAD FAVORITES ERROR:", error);
+        favoritesElements.grid.innerHTML = "Failed to load favorites.";
     }
 }
 
-// -----------------------------
-// REMOVE FAVORITE
-// -----------------------------
-async function removeFavorite(mal_id){
-    try{
-        const res = await fetch("http://127.0.0.1:5000/remove_favorite", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user_id: user.user_id,
-                mal_id: mal_id
-            })
-        });
+favoritesElements.sortFavorites?.addEventListener("change", renderFavorites);
+favoritesElements.browseAnimeButton?.addEventListener("click", () => {
+    window.location.href = "browse.php";
+});
 
-        const data = await res.json();
-
-        if(data.success){
-            loadFavorites(); // refresh UI
-        }else{
-            alert(data.message);
-        }
-
-    }catch(err){
-        console.error(err);
-        alert("Failed to remove");
-    }
-}
-
-// -----------------------------
-// LOAD ON START
-// -----------------------------
 loadFavorites();

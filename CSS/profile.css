@@ -10,6 +10,28 @@ margin:auto;
 padding:30px 20px;
 }
 
+.page-nav{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:20px;
+}
+
+.nav-link,
+.ghost-btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 16px;
+border:1px solid #d8dce8;
+border-radius:999px;
+background:#ffffff;
+color:#1f2937;
+text-decoration:none;
+cursor:pointer;
+font-weight:600;
+}
+
 .card{
 background:white;
 border-radius:12px;
@@ -31,6 +53,13 @@ display:flex;
 align-items:center;
 gap:25px;
 flex-wrap:wrap;
+}
+
+.profile-actions{
+margin-left:auto;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
 }
 
 .avatar{
@@ -66,7 +95,6 @@ margin-right:6px;
 }
 
 .edit-btn{
-margin-left:auto;
 padding:10px 18px;
 border:none;
 background:#6b5cff;
@@ -78,6 +106,10 @@ font-weight:bold;
 
 .edit-btn:hover{
 background:#5746ff;
+}
+
+.ghost-btn{
+background:#ffffff;
 }
 
 .stats{
@@ -117,6 +149,18 @@ border-bottom:1px solid #eee;
 padding:12px 0;
 }
 
+.activity-button{
+width:100%;
+border:none;
+background:transparent;
+text-align:left;
+cursor:pointer;
+}
+
+.activity-button:hover .activity-title{
+color:#6b5cff;
+}
+
 .activity:last-child{
 border:none;
 }
@@ -126,6 +170,12 @@ font-weight:600;
 }
 
 .about{
+color:#666;
+line-height:1.6;
+}
+
+.empty-copy{
+margin:0;
 color:#666;
 line-height:1.6;
 }

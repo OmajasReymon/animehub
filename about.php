@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>About AnimeHub</title>
+
+<link rel="stylesheet" href="https://unpkg.com/lucide-static/font/lucide.css">
+<link rel="stylesheet" href="CSS/about.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="header">
+<div class="header-title">
+<i class="lucide lucide-info"></i>
+About AnimeHub
+</div>
+
+<p>Your ultimate destination for discovering, tracking, and celebrating anime</p>
+</div>
+
+
+<!-- MISSION -->
+
+<div class="card mission">
+
+<i class="lucide lucide-target" style="font-size:40px"></i>
+
+<h2>Our Mission</h2>
+
+<p>
+To create the most comprehensive and user-friendly platform for anime discovery,
+helping fans find their next favorite series while building a vibrant community
+of enthusiasts from around the world.
+</p>
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="card stat">
+<div class="stat-value">10,000+</div>
+<div class="stat-label">Anime Titles</div>
+</div>
+
+<div class="card stat">
+<div class="stat-value">500K+</div>
+<div class="stat-label">Active Users</div>
+</div>
+
+<div class="card stat">
+<div class="stat-value">1M+</div>
+<div class="stat-label">Reviews</div>
+</div>
+
+<div class="card stat">
+<div class="stat-value">50+</div>
+<div class="stat-label">Countries</div>
+</div>
+
+</div>
+
+
+<!-- STORY -->
+
+<div class="story">
+
+<h2 class="section-title-left">Our Story</h2>
+
+<p>
+AnimeHub was founded in 2026 by a group of passionate anime fans who saw the need
+for a better way to discover and track anime. What started as a small project has
+grown into a thriving platform serving hundreds of thousands of users worldwide.
+</p>
+
+<p>
+I understand the challenge of finding your next anime to watch. With thousands of
+titles across multiple genres, it can be overwhelming. That's why I built AnimeHub
+to make discovery easier, more personalized, and more enjoyable.
+</p>
+
+<p>
+Today, I'm proud to be a trusted resource for anime fans, offering comprehensive
+information, personalized recommendations, and a community where fans can connect
+and share their love for anime.
+</p>
+
+</div>
+
+
+<!-- VALUES -->
+
+<div class="values">
+
+<div class="section-title">Our Values</div>
+
+<div class="values-grid">
+
+<div class="card value">
+<div class="value-icon">
+<i class="lucide lucide-heart"></i>
+</div>
+<div>
+<h3>Passion for Anime</h3>
+<p>I'm built by anime fans, for anime fans. My love for the medium drives everything I do.</p>
+</div>
+</div>
+
+<div class="card value">
+<div class="value-icon">
+<i class="lucide lucide-users"></i>
+</div>
+<div>
+<h3>Community First</h3>
+<p>I believe in the power of community and creating a welcoming space for all anime enthusiasts.</p>
+</div>
+</div>
+
+<div class="card value">
+<div class="value-icon">
+<i class="lucide lucide-sparkles"></i>
+</div>
+<div>
+<h3>Quality Content</h3>
+<p>I curate and maintain accurate, up-to-date information about anime from all genres and eras.</p>
+</div>
+</div>
+
+<div class="card value">
+<div class="value-icon">
+<i class="lucide lucide-globe"></i>
+</div>
+<div>
+<h3>Global Reach</h3>
+<p>Connecting anime fans worldwide with content from Japan and beyond.</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TEAM -->
+
+<div>
+
+<div class="section-title">Meet The Developer</div>
+
+<div class="team-grid">
+
+<div class="card team-card">
+<div class="avatar">AT</div>
+<h3>REYMON MILLORIA OMAJAS</h3>
+<p>Founder & CEO</p>
+</div>
+
+
+
+</div>
+
+</div>
+
+
+<!-- FUTURE -->
+
+<div class="card future">
+
+<h2>Looking Ahead</h2>
+
+<p>
+I constantly working on new features and improvements to make AnimeHub the best
+platform for anime fans. From enhanced recommendation algorithms to community
+features and mobile apps, we're excited about what's coming next.
+Thank you for being part of our journey!
+</p>
+
+</div>
+
+</div>
+
+</body>
+</html>

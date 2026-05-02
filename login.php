@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AnimeHub - Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="CSS/login.css">
+<link rel="stylesheet" href="CSS/flash-message.css?v=20260321k">
+
+</head>
+<body>
+
+<header class="navbar">
+
+<div class="logo">
+<div class="logo-box">A</div>
+<span>AnimeHub</span>
+</div>
+
+<nav>
+<a href="index.php">Home</a>
+<a href="browse.php">Browse</a>
+</nav>
+
+<div class="search">
+<input type="text" placeholder="Search anime...">
+</div>
+
+</header>
+
+<div class="login-container">
+
+<div class="login-box">
+
+<div class="logo-large">A</div>
+
+<h1>Welcome back</h1>
+<p class="subtitle">Sign in to your account to continue</p>
+
+<!-- ✅ FORM -->
+<form id="loginForm">
+
+<label for="email">Email</label>
+<div class="input-group">
+<span class="icon">📧</span>
+<input id="email" name="email" type="email" placeholder="you@example.com" required>
+</div>
+
+<div class="password-header">
+<label for="password">Password</label>
+<a href="#">Forgot password?</a>
+</div>
+
+<div class="input-group">
+<span class="icon">🔒</span>
+<input id="password" name="password" type="password" placeholder="Enter your password" required>
+<button type="button" class="toggle" onclick="togglePassword()">👁</button>
+</div>
+
+<button type="submit" class="login-btn">Sign in</button>
+
+</form>
+
+<div class="divider">
+<span>OR CONTINUE WITH</span>
+</div>
+
+<div class="social-login">
+
+<!-- 🔥 FIX: prevent form submit -->
+<button type="button" class="google">
+<img src="https://www.svgrepo.com/show/475656/google-color.svg">
+Google
+</button>
+
+<button type="button" class="facebook">
+<img src="https://www.svgrepo.com/show/475647/facebook-color.svg">
+Facebook
+</button>
+
+</div>
+
+</div>
+
+<p class="signup-text">
+Don't have an account?
+<a href="register.php">Sign up</a>
+</p>
+
+</div>
+
+<!-- ✅ LOAD JS LAST -->
+<script src="JS/flash-message.js?v=20260321k"></script>
+<script src="JS/login.js?v=20260321k"></script>
+
+</body>
+</html>

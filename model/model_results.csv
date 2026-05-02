@@ -1,0 +1,4 @@
+Model,Vector Count,Hit Rate@10,Mean Overlap@10,Mean Jaccard@10,Evaluated Items
+Count Bigram,30000,0.997,0.8166,0.7494,1000
+TF-IDF Bigram,30000,0.997,0.7377,0.6557,1000
+TF-IDF Unigram,20000,0.993,0.6257,0.5317,1000

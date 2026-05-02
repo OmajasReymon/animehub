@@ -64,7 +64,7 @@ async function register(e){
             console.log("Saved user:", userData);
 
             // ✅ REDIRECT (force refresh behavior)
-            window.location.href = "index.html";
+            window.location.href = data.redirect_url || "index.php";
 
         } else {
             alert(data.message || "Registration failed");

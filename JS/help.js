@@ -3,7 +3,7 @@ const faqs = [
 
 {
 question:"How do I add anime to my favorites?",
-answer:"Click on any anime card to view its details, then click the heart icon at the top right of the page."
+answer:"Hover an anime card to use the Favorite button, or open the detail page and tap Add to Favorites."
 },
 
 {

@@ -55,7 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     localStorage.setItem("user", JSON.stringify({
                         user_id: data.user_id,
                         name: data.name,
-                        email: data.email
+                        email: data.email,
+                        role: data.role || "user"
                     }));
 
                     window.AnimeHubToast?.queue(`Welcome back, ${data.name}!`, "success", {

@@ -33,6 +33,9 @@ DB_CONFIG = {
     "database": "animehub_db"
 }
 
+ADMIN_ROLE = "admin"
+USER_ROLE = "user"
+
 def get_db_connection():
     try:
         return mysql.connector.connect(**DB_CONFIG)
@@ -60,6 +63,52 @@ def close_db_resources(cursor=None, db=None):
             db.close()
     except Exception:
         pass
+
+def normalize_role(role):
+    role_value = str(role or USER_ROLE).strip().lower()
+    return ADMIN_ROLE if role_value == ADMIN_ROLE else USER_ROLE
+
+def ensure_users_table(cursor, db):
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(120) NOT NULL,
+            email VARCHAR(150) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            role VARCHAR(20) NOT NULL DEFAULT 'user',
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+    db.commit()
+
+    cursor.execute("SHOW COLUMNS FROM users LIKE 'role'")
+    if cursor.fetchone() is None:
+        cursor.execute("ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'")
+        db.commit()
+
+def ensure_favorites_table(cursor, db):
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS favorites (
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            mal_id INT NOT NULL,
+            title VARCHAR(255) NULL,
+            image TEXT NULL,
+            score DECIMAL(4,2) NULL,
+            status VARCHAR(80) NULL,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_user_anime (user_id, mal_id)
+        )
+        """
+    )
+    db.commit()
+
+def ensure_core_tables(cursor, db):
+    ensure_users_table(cursor, db)
+    ensure_favorites_table(cursor, db)
 
 def db_unavailable_response():
     return jsonify({
@@ -1112,6 +1161,8 @@ def register():
         if db is None or cursor is None:
             return db_unavailable_response()
 
+        ensure_users_table(cursor, db)
+
         data = get_request_payload()
 
         if not data:
@@ -1151,6 +1202,7 @@ def register():
             "user_id": user_id,
             "name": name,
             "email": email,
+            "role": USER_ROLE,
             "redirect_url": "index.php"
         }), 200
 
@@ -1174,6 +1226,8 @@ def login():
 
         if db is None or cursor is None:
             return db_unavailable_response()
+
+        ensure_users_table(cursor, db)
 
         data = get_request_payload()
 
@@ -1202,13 +1256,16 @@ def login():
         db_password = user["password"] if isinstance(user, dict) else user[3]
 
         if bcrypt.checkpw(password.encode('utf-8'), db_password.encode('utf-8')):
+            role = normalize_role(user.get("role") if isinstance(user, dict) else None)
+
             return jsonify({
                 "success": True,
                 "message": "Login successful",
                 "user_id": user["id"] if isinstance(user, dict) else user[0],
                 "name": user["name"] if isinstance(user, dict) else user[1],
                 "email": user["email"] if isinstance(user, dict) else user[2],
-                "redirect_url": "index.php"
+                "role": role,
+                "redirect_url": "admin.php" if role == ADMIN_ROLE else "index.php"
             }), 200
 
         return jsonify({
@@ -1236,8 +1293,10 @@ def get_user_profile(user_id):
         if db is None or cursor is None:
             return db_unavailable_response()
 
+        ensure_users_table(cursor, db)
+
         cursor.execute(
-            "SELECT id, name, email FROM users WHERE id=%s",
+            "SELECT id, name, email, role FROM users WHERE id=%s",
             (user_id,)
         )
         user = cursor.fetchone()
@@ -1253,6 +1312,7 @@ def get_user_profile(user_id):
                 "user_id": user["id"],
                 "name": user["name"],
                 "email": user["email"],
+                "role": normalize_role(user.get("role")),
                 "settings": settings
             }
         })
@@ -1277,6 +1337,8 @@ def update_user_profile():
         if db is None or cursor is None:
             return db_unavailable_response()
 
+        ensure_users_table(cursor, db)
+
         data = request.get_json(silent=True) or {}
         user_id = data.get("user_id")
         name = (data.get("name") or "").strip()
@@ -1293,6 +1355,14 @@ def update_user_profile():
 
         if cursor.fetchone():
             return jsonify({"success": False, "message": "Email already exists"}), 400
+
+        cursor.execute("SELECT role FROM users WHERE id=%s", (user_id,))
+        existing_user = cursor.fetchone()
+
+        if not existing_user:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        current_role = normalize_role(existing_user.get("role"))
 
         cursor.execute(
             "UPDATE users SET name=%s, email=%s WHERE id=%s",
@@ -1317,12 +1387,133 @@ def update_user_profile():
                 "user_id": int(user_id),
                 "name": name,
                 "email": email,
+                "role": current_role,
                 "settings": settings
             }
         })
 
     except Exception as e:
         print("UPDATE USER PROFILE ERROR:", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+    finally:
+        close_db_resources(cursor, db)
+
+def get_admin_id_from_request():
+    raw_admin_id = request.args.get("admin_id")
+
+    if raw_admin_id is None:
+        payload = request.get_json(silent=True) or {}
+        raw_admin_id = payload.get("admin_id")
+
+    try:
+        return int(raw_admin_id)
+    except (TypeError, ValueError):
+        return None
+
+def require_admin_user(cursor):
+    admin_id = get_admin_id_from_request()
+
+    if admin_id is None:
+        return None, (jsonify({"success": False, "message": "Admin login required"}), 401)
+
+    cursor.execute(
+        "SELECT id, name, email, role FROM users WHERE id=%s",
+        (admin_id,)
+    )
+    admin = cursor.fetchone()
+
+    if not admin or normalize_role(admin.get("role")) != ADMIN_ROLE:
+        return None, (jsonify({"success": False, "message": "Admin access only"}), 403)
+
+    return admin, None
+
+# -----------------------------
+# ADMIN OVERVIEW
+# -----------------------------
+@app.route("/admin/overview")
+def admin_overview():
+    db = None
+    cursor = None
+
+    try:
+        db, cursor = get_db_cursor()
+
+        if db is None or cursor is None:
+            return db_unavailable_response()
+
+        ensure_core_tables(cursor, db)
+
+        admin, error_response = require_admin_user(cursor)
+        if error_response:
+            return error_response
+
+        cursor.execute("SELECT COUNT(*) AS total FROM users")
+        total_users = cursor.fetchone()["total"]
+
+        cursor.execute("SELECT COUNT(*) AS total FROM users WHERE role=%s", (ADMIN_ROLE,))
+        total_admins = cursor.fetchone()["total"]
+
+        cursor.execute("SELECT COUNT(*) AS total FROM favorites")
+        total_favorites = cursor.fetchone()["total"]
+
+        cursor.execute("SELECT COUNT(DISTINCT user_id) AS total FROM favorites")
+        active_collectors = cursor.fetchone()["total"]
+
+        cursor.execute(
+            """
+            SELECT id, name, email, role
+            FROM users
+            ORDER BY id DESC
+            LIMIT 12
+            """
+        )
+        users = cursor.fetchall()
+
+        cursor.execute(
+            """
+            SELECT
+                favorites.user_id,
+                favorites.mal_id,
+                favorites.title,
+                favorites.score,
+                favorites.status,
+                users.name AS user_name
+            FROM favorites
+            LEFT JOIN users ON users.id = favorites.user_id
+            ORDER BY favorites.user_id DESC, favorites.mal_id DESC
+            LIMIT 12
+            """
+        )
+        recent_favorites = cursor.fetchall()
+
+        return jsonify({
+            "success": True,
+            "admin": {
+                "user_id": admin["id"],
+                "name": admin["name"],
+                "email": admin["email"],
+                "role": normalize_role(admin.get("role"))
+            },
+            "stats": {
+                "users": total_users,
+                "admins": total_admins,
+                "favorites": total_favorites,
+                "activeCollectors": active_collectors
+            },
+            "users": [
+                {
+                    "user_id": user["id"],
+                    "name": user["name"],
+                    "email": user["email"],
+                    "role": normalize_role(user.get("role"))
+                }
+                for user in users
+            ],
+            "recentFavorites": recent_favorites
+        })
+
+    except Exception as e:
+        print("ADMIN OVERVIEW ERROR:", e)
         return jsonify({"success": False, "message": str(e)}), 500
     finally:
         close_db_resources(cursor, db)
@@ -1490,6 +1681,8 @@ def add_favorite():
         if db is None or cursor is None:
             return db_unavailable_response()
 
+        ensure_favorites_table(cursor, db)
+
         data = request.get_json(silent=True) or {}
 
         user_id = data.get("user_id")
@@ -1539,6 +1732,8 @@ def get_favorites(user_id):
         if db is None or cursor is None:
             return db_unavailable_response()
 
+        ensure_favorites_table(cursor, db)
+
         cursor.execute(
             "SELECT * FROM favorites WHERE user_id=%s",
             (user_id,)
@@ -1567,6 +1762,8 @@ def remove_favorite():
 
         if db is None or cursor is None:
             return db_unavailable_response()
+
+        ensure_favorites_table(cursor, db)
 
         data = request.get_json(silent=True) or {}
 
@@ -1601,6 +1798,8 @@ def clear_favorites():
 
         if db is None or cursor is None:
             return db_unavailable_response()
+
+        ensure_favorites_table(cursor, db)
 
         data = request.get_json(silent=True) or {}
         user_id = data.get("user_id")

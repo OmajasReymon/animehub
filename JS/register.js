@@ -55,7 +55,8 @@ async function register(e){
             const userData = {
                 user_id: data.user_id,
                 name: data.name,
-                email: data.email
+                email: data.email,
+                role: data.role || "user"
             };
 
             localStorage.setItem("user", JSON.stringify(userData));

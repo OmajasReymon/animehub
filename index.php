@@ -18,6 +18,7 @@
     <nav>
         <a href="index.php" class="active btn-primary">Home</a>
         <a href="browse.php" class="btn-outline">Browse</a>
+        <a href="admin.php" id="dashboardNavLink" class="btn-outline" style="display:none;">Dashboard</a>
     </nav>
 
     
@@ -132,6 +133,7 @@ document.addEventListener("DOMContentLoaded", function(){
     const userEmail = document.getElementById("userEmail");
     const navUserName = document.getElementById("navUserName");
     const avatar = document.querySelector(".avatar");
+    const dashboardNavLink = document.getElementById("dashboardNavLink");
 
     if(user){
         // ✅ USER LOGGED IN
@@ -144,6 +146,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
         if(avatar){
             avatar.textContent = user.name.charAt(0).toUpperCase();
+        }
+
+        if(dashboardNavLink && user.role === "admin"){
+            dashboardNavLink.style.display = "inline-flex";
         }
 
     } else {
